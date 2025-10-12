@@ -7,12 +7,14 @@
 #include "utils/audio_viz.h"
 #include "utils/sentence_case.h"
 #include "utils/type_alchemy.h"
+#include "send_string.h"
 
 enum custom_keycodes {
   GAME_MODE = SAFE_RANGE,
   AUDIO_VIZ = SAFE_RANGE+1,
   TOGG_SEN_CASE = SAFE_RANGE+2,
   TOGG_ALCH_TYPE = SAFE_RANGE+3,
+  EM_DASH  = SAFE_RANGE+4
 };
 
 socd_cleaner_t socd_v = {{KC_W, KC_S}, SOCD_CLEANER_LAST};
@@ -31,7 +33,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [1] = LAYOUT( /* FN -> RGB */
         _______,  TOGG_ALCH_TYPE,  UC_NEXT,  AC_TOGG ,  _______,  _______,  _______,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,  KC_VOLU,   KC_SCRL,  QK_LAYER_LOCK,
-        _______,  _______ ,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,   
+        _______,  _______ ,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  EM_DASH,  _______,   _______,  _______,   
         _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_INS,    RGB_MOD,  KC_BRIU,  
         TOGG_SEN_CASE,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,             _______,  KC_BRID, 
         _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  MO(2),               RGB_VAI,
@@ -55,7 +57,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,            _______,
     _______,  _______,  _______,                      _______,                                 _______,  _______,            _______,  _______,  _______ 
     ),
-
 };
 // clang-format on
 #ifdef ENCODER_MAP_ENABLE
@@ -71,9 +72,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_type_alchemy(keycode, (char)(keycode - KC_A + 'a'), record->event.pressed)) {
         return false; // Skip further processing if type_alchemy handled the event
     }
-    if (!process_socd_cleaner(keycode, record, &socd_v)) {
-        return false;
-    }
+    if (!process_socd_cleaner(keycode, record, &socd_v)) { return false; }
+    if (!process_socd_cleaner(keycode, record, &socd_h)) { return false; }
+    
     if (!process_sentence_case(keycode, record)) { return false; }
     if(game_mode_enabled){
         if(keycode == KC_LCMD){
@@ -108,6 +109,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (keycode == TOGG_ALCH_TYPE && record->event.pressed){
         toggle_type_alchemy();
+        return false;
+    }
+
+    if (keycode == EM_DASH && record->event.pressed) {
+        send_unicode_string("—");
         return false;
     }
     return true;
