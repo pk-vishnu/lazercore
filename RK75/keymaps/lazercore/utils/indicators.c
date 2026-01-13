@@ -1,6 +1,7 @@
 #include "indicators.h"
 #include "sentence_case.h"
 #include "type_alchemy.h"
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     uint8_t layer = get_highest_layer(layer_state | default_layer_state);
 
@@ -8,16 +9,13 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         hsv_t global_hsv = rgb_matrix_get_hsv();
 
         if (layer == 0) {
-            // Sentence Case Key Indicator
             if (is_sentence_case_on() && i == 50) {
                 rgb_matrix_set_color(i, 0xFF, 0x00, 0x00);
             }
 
-            // Type Alchemy Key Indicator
             if (is_type_alchemy_on() && i == 20) {
                 uint8_t unicode_mode = get_unicode_input_mode();
 
-                // Check the active Unicode input mode and set the color
                 if (unicode_mode == 4) {
                     rgb_matrix_set_color(i, 0x00, 0xFF, 0x00); // Green for WinCompose
                 } else if (unicode_mode == 1) {
@@ -29,13 +27,11 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
                 }
             }
 
-            // Autocorrect Enabled? 
             if (autocorrect_is_enabled() && i == 18){
                 rgb_matrix_set_color(i, 0x00, 0xFF, 0x00); // Green
             }
         }
 
-        // Layer 1 Lighting
         if (layer == 1) {
             if (i == 6) {
                 rgb_matrix_set_color(i, 0xFF, 0xFF, 0xFF); // White
@@ -55,7 +51,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             }
         }
 
-        // Layer 2 Lighting
         if (layer == 2) {
             if (i == 21 || i == 55) {
                 rgb_matrix_set_color(i, 0xFF, 0x00, 0x00); // Bright Red
@@ -68,9 +63,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         }
     }
 
-    // Layer 3 Audio Visualization
     if (layer == 3) {
-        handle_audio_viz(led_min, led_max);
+        audio_ripple_render();
     }
 
     return false;

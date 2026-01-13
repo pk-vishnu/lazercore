@@ -1,5 +1,6 @@
-/* 
- * Copyright 2025 Lazercore 
+/*
+ * Copyright 2025 Lazercore
+ * Author: P K, Vishnu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +17,23 @@
 
 #pragma once
 
-#ifndef AUDIO_VIZ_H
-#define AUDIO_VIZ_H
+#include<stdint.h>
+#include<stdbool.h>
 
-#include "quantum.h"
-#include "rgb_matrix.h"
-#include "via.h"
+#define AUDIO_RIPPLE_MAGIC 0xA5
+#define AUDIO_RIPPLE_VERSION 0x01
+#define AUDIO_RIPPLE_BANDS 6
 
-extern bool audio_viz_enabled;
+typedef struct{
+    uint8_t magic;
+    uint8_t version;
+    uint8_t band_count;
+    uint8_t bands[AUDIO_RIPPLE_BANDS];
+} audio_ripple_frame_t;
 
-void enable_audio_viz(void);
-void disable_audio_viz(void);
+void audio_ripple_enable(void);
+void audio_ripple_disable(void);
+bool audio_ripple_is_enabled(void);
 
-void handle_audio_viz(uint8_t led_min, uint8_t led_max);
-#endif // AUDIO_VIZ_H
+void audio_ripple_set_frame(const audio_ripple_frame_t *frame);
+void audio_ripple_render(void);

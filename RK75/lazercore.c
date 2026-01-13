@@ -7,23 +7,19 @@
 
 void keyboard_pre_init_kb(void) {
     gpio_set_pin_output(LED_ENABLE_PIN);
-    gpio_write_pin_high(LED_ENABLE_PIN);    
+    gpio_write_pin_high(LED_ENABLE_PIN);
 
-    // Set up indicator LEDs
     gpio_set_pin_output(LED_WIN_LOCK_PIN);
     gpio_write_pin_high(LED_WIN_LOCK_PIN);
     gpio_set_pin_output(LED_MAC_PIN);
     gpio_write_pin_high(LED_MAC_PIN);
-    
+
     keyboard_pre_init_user();
 }
 
 void keyboard_pre_init_user(){
     debug_enable=true;
-    /*Eg: Add custom mappings for Type Alchemy */
     init_type_alchemy();
-    add_word_symbol_mapping("laugh", "😂"); // Dynamically add new mappings
-    add_word_symbol_mapping("sad", "😢");
 }
 
 void suspend_power_down_kb(void) {

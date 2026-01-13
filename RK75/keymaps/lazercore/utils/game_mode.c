@@ -1,4 +1,3 @@
-// game_mode.c
 #include "game_mode.h"
 #include "quantum.h"
 
