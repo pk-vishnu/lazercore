@@ -25,7 +25,7 @@ Activate Game Mode with `Fn + Right Shift + G`. Features include:
 - **Custom RGB Matrix**: Highlights WASD keys with adjustable RGB modes.  
 - **Windows Key Lock**: Blocks the `LGUI` (Windows) key to prevent interruptions.  
 
-### Audio Visualizer Mode (Layer 3)  
+### Audio Visualizer Mode (Layer 3) (Currently non-functional, rewrite in progress)
 Activate with `Fn + Right Shift + Volume Knob`.  
 - Real-time, reactive audio visualization powered by [Lazersync](https://github.com/pk-vishnu/lazersync).  
 
