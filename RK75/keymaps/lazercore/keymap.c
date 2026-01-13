@@ -24,13 +24,7 @@
 #include "utils/type_alchemy.h"
 #include "send_string.h"
 
-enum custom_keycodes {
-  GAME_MODE = SAFE_RANGE,
-  AUDIO_RIPPLE = SAFE_RANGE+1,
-  TOGG_SEN_CASE = SAFE_RANGE+2,
-  TOGG_ALCH_TYPE = SAFE_RANGE+3,
-  EM_DASH  = SAFE_RANGE+4
-};
+enum custom_keycodes { GAME_MODE = SAFE_RANGE, AUDIO_RIPPLE = SAFE_RANGE + 1, TOGG_SEN_CASE = SAFE_RANGE + 2, TOGG_ALCH_TYPE = SAFE_RANGE + 3, EM_DASH = SAFE_RANGE + 4 };
 
 socd_cleaner_t socd_v = {{KC_W, KC_S}, SOCD_CLEANER_LAST};
 socd_cleaner_t socd_h = {{KC_A, KC_D}, SOCD_CLEANER_LAST};
@@ -90,12 +84,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!process_type_alchemy(keycode, (char)(keycode - KC_A + 'a'), record->event.pressed)) {
         return false;
     }
-    if (!process_socd_cleaner(keycode, record, &socd_v)) { return false; }
-    if (!process_socd_cleaner(keycode, record, &socd_h)) { return false; }
+    if (!process_socd_cleaner(keycode, record, &socd_v)) {
+        return false;
+    }
+    if (!process_socd_cleaner(keycode, record, &socd_h)) {
+        return false;
+    }
 
-    if (!process_sentence_case(keycode, record)) { return false; }
-    if(game_mode_enabled){
-        if(keycode == KC_LCMD){
+    if (!process_sentence_case(keycode, record)) {
+        return false;
+    }
+    if (game_mode_enabled) {
+        if (keycode == KC_LCMD) {
             return false;
         }
     }
@@ -113,7 +113,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
     if (keycode == AUDIO_RIPPLE && record->event.pressed) {
-        if(audio_ripple_is_enabled()){
+        if (audio_ripple_is_enabled()) {
             audio_ripple_disable();
         } else {
             audio_ripple_enable();
@@ -125,7 +125,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
 
-    if (keycode == TOGG_ALCH_TYPE && record->event.pressed){
+    if (keycode == TOGG_ALCH_TYPE && record->event.pressed) {
         toggle_type_alchemy();
         return false;
     }
