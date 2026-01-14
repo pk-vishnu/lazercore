@@ -52,7 +52,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         }
 
         if (layer == 2) {
-            if (i == 21 || i == 55) {
+            if (i == 21 || i == 55 || i==79) {
                 rgb_matrix_set_color(i, 0xFF, 0x00, 0x00); // Bright Red
             } else {
                 hsv_t dimmed_hsv = global_hsv;
