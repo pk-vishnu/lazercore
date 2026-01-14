@@ -24,6 +24,9 @@
 #define AUDIO_RIPPLE_VERSION 0x01
 #define AUDIO_RIPPLE_BANDS 6
 
+#define RIPPLE_PKT_AUDIO   0x01
+#define RIPPLE_PKT_CONTROL 0x02
+
 typedef struct{
     uint8_t magic;
     uint8_t version;
@@ -31,9 +34,25 @@ typedef struct{
     uint8_t bands[AUDIO_RIPPLE_BANDS];
 } audio_ripple_frame_t;
 
+enum {
+    RIPPLE_PARAM_SPEED = 1,
+    RIPPLE_PARAM_DECAY,
+    RIPPLE_PARAM_BASE_WIDTH,
+    RIPPLE_PARAM_MID_GAIN,
+    RIPPLE_PARAM_SPARKLE,
+};
+typedef struct {
+    uint8_t magic;
+    uint8_t version;
+    uint8_t type;
+    uint8_t param;
+    uint16_t value;
+} ripple_control_packet_t;
+
 void audio_ripple_enable(void);
 void audio_ripple_disable(void);
 bool audio_ripple_is_enabled(void);
 
 void audio_ripple_set_frame(const audio_ripple_frame_t *frame);
 void audio_ripple_render(void);
+void audio_ripple_handle_control(const ripple_control_packet_t *pkt);
