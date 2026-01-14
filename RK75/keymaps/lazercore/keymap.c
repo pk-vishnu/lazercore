@@ -23,6 +23,7 @@
 #include "utils/sentence_case.h"
 #include "utils/type_alchemy.h"
 #include "send_string.h"
+#include "rgb_matrix.h"
 
 enum custom_keycodes { GAME_MODE = SAFE_RANGE, AUDIO_RIPPLE = SAFE_RANGE + 1, TOGG_SEN_CASE = SAFE_RANGE + 2, TOGG_ALCH_TYPE = SAFE_RANGE + 3, EM_DASH = SAFE_RANGE + 4 };
 
@@ -135,4 +136,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
     }
     return true;
+}
+
+static uint8_t saved_val = 0;
+static bool is_dimmed = false;
+static uint8_t current_dim_layer = 0;
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    uint8_t layer = get_highest_layer(state);
+    hsv_t current_hsv = rgb_matrix_get_hsv();
+
+    if ((layer == 1 || layer == 2) && !is_dimmed) {
+        saved_val = current_hsv.v;
+        is_dimmed = true;
+        current_dim_layer = layer;
+
+        uint8_t divisor = (layer == 2) ? 3 : 2;
+        rgb_matrix_sethsv_noeeprom(current_hsv.h, current_hsv.s, saved_val / divisor);
+    }
+
+    else if ((layer == 1 || layer == 2) && is_dimmed && (current_dim_layer != layer)) {
+        uint8_t divisor = (layer == 2) ? 3 : 2;
+        rgb_matrix_sethsv_noeeprom(current_hsv.h, current_hsv.s, saved_val / divisor);
+        current_dim_layer = layer;
+    }
+
+    else if (layer == 0 && is_dimmed) {
+        uint8_t old_divisor = (current_dim_layer == 2) ? 3 : 2;
+        uint8_t expected = saved_val / old_divisor;
+        if (current_hsv.v == expected) {
+            rgb_matrix_sethsv_noeeprom(current_hsv.h, current_hsv.s, saved_val);
+        } else {
+            uint16_t calc = (uint16_t)current_hsv.v * old_divisor;
+            if (calc > 255) calc = 255;
+            rgb_matrix_sethsv_noeeprom(current_hsv.h, current_hsv.s, (uint8_t)calc);
+        }
+        is_dimmed = false;
+        current_dim_layer = 0;
+    }
+
+    return state;
 }
